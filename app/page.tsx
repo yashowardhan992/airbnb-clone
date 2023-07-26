@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useClient } from "next/client";
 import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";
 import EmptyState from "@/app/components/EmptyState";
@@ -12,6 +13,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ listingId }) => {
+  const client = useClient();
   const [listing, setListing] = useState<any | null>(null);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
 
@@ -30,7 +32,7 @@ const Home: React.FC<HomeProps> = ({ listingId }) => {
     };
 
     fetchData();
-  }, [listingId]);
+  }, [client, listingId]);
 
   if (!listing) {
     return (

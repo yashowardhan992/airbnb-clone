@@ -1,4 +1,5 @@
 ## Deployed Link : https://rental-prop.vercel.app
+For testing, use credentials : | e-mail: test@mail.com , password: qwerty | , or create your own account. 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 

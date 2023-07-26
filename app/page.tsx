@@ -1,22 +1,38 @@
+import { useEffect, useState } from "react";
 import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";
 import EmptyState from "@/app/components/EmptyState";
 
-import getListings, {
-  IListingsParams
-} from "@/app/actions/getListings";
+import getListingById, { IParams as ListingParams } from "@/app/actions/getListingById";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import ClientOnly from "./components/ClientOnly";
 
 interface HomeProps {
-  searchParams: IListingsParams
-};
+  listingId: string; // Assuming you have the listing ID as a prop
+}
 
-const Home = async ({ searchParams }: HomeProps) => {
-  const listings = await getListings(searchParams);
-  const currentUser = await getCurrentUser();
+const Home: React.FC<HomeProps> = ({ listingId }) => {
+  const [listing, setListing] = useState<any | null>(null);
+  const [currentUser, setCurrentUser] = useState<any | null>(null);
 
-  if (listings.length === 0) {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const listingData = await getListingById({ listingId });
+        const currentUserData = await getCurrentUser();
+
+        setListing(listingData);
+        setCurrentUser(currentUserData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle error if needed
+      }
+    };
+
+    fetchData();
+  }, [listingId]);
+
+  if (!listing) {
     return (
       <ClientOnly>
         <EmptyState showReset />
@@ -27,30 +43,15 @@ const Home = async ({ searchParams }: HomeProps) => {
   return (
     <ClientOnly>
       <Container>
-        <div
-          className="
-            pt-24
-            grid 
-            grid-cols-1 
-            sm:grid-cols-2 
-            md:grid-cols-3 
-            lg:grid-cols-4
-            xl:grid-cols-5
-            2xl:grid-cols-6
-            gap-8
-          "
-        >
-          {listings.map((listing: any) => (
-            <ListingCard
-              currentUser={currentUser}
-              key={listing.id}
-              data={listing}
-            />
-          ))}
-        </div>
+        {/* Render the listing card with the fetched data */}
+        <ListingCard
+          currentUser={currentUser}
+          key={listing.id}
+          data={listing}
+        />
       </Container>
     </ClientOnly>
-  )
-}
+  );
+};
 
 export default Home;
